@@ -1,58 +1,58 @@
 import sqlite3
 
 
-def connect_db(database_name):
+def connect_db(db_name):
     try:
-        conn = sqlite3.connect(database_name)
-        return conn
+        connectionn = sqlite3.connect(db_name)
+        return connectionn
     except sqlite3.Error as e:
         print(f"Error connecting to database: {e}")
         return None
 
 
-def get_total_and_average(conn):
+def get_total_and_average(connectionn):
     while True:
-        search_string = input("Enter search string (or 'exit'): ").strip().lower()
+        ss = input("Enter search string (or 'exit'): ").strip().lower()
         
-        if search_string == 'exit':
+        if ss == 'exit':
             break
         
-        if search_string == "":
+        if ss == "":
             print("Please enter a search string")
             continue
         
         try:
-            query = "SELECT name, marks FROM students WHERE lower(name) LIKE ?"
-            search_param = f"%{search_string}%"
+            qry = "SELECT name, marks FROM students WHERE lower(name) LIKE ?"
+            search_param = f"%{ss}%"
             
-            cursor = conn.execute(query, (search_param,))
+            cursor = connectionn.execute(qry, (search_param,))
             rows = cursor.fetchall()
             
             if len(rows) == 0:
-                print("No matching records found. Text it not available in table")
+                print("No matching records found. Search String it not available in table")
             else:
-                total_marks = 0
+                sum = 0
                 for row in rows:
                     name, marks = row
                     print(f"Name: {name}, Marks: {marks}")
-                    total_marks += marks
+                    sum += marks
                 
-                num_rows = len(rows)
-                average_marks = total_marks / num_rows if num_rows > 0 else 0
+                nrows = len(rows)
+                average_marks = sum / nrows if nrows > 0 else 0
                 
-                print(f"Total Marks: {total_marks}")
+                print(f"Total Marks: {sum}")
                 print(f"Average Marks: {average_marks}")
         
         except sqlite3.Error as e:
             print(f"Error executing SQL query: {e}")
     
-    conn.close()
+    connectionn.close()
 
 if __name__ == "__main__":
-    database_name = "assignment.db"
-    conn = connect_db(database_name)
+    db_name = "assignment.db"
+    connectionn = connect_db(db_name)
     
-    if conn:
-        get_total_and_average(conn)
+    if connectionn:
+        get_total_and_average(connectionn)
     else:
         print("Failed to connect to database. Exiting.")
